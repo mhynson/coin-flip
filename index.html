@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Coin Flip App</title>
+
+  <script>
+
+    // 1. Ask the user if they want to play a game..
+
+    // 2. Decision results
+    //    a. Chose YES - show a couple of buttons on the screen that represent heads or tail; show another button to flip the coin
+    //    b. Chose NO - show a message that says - it's all good. let us know if you change your mind. button - that restarts the question processs
+
+    // 3. If user picks heads, and the coin lands heads up, then show a message that they win, and vice versa for tails - tails
+    // 4. If user picks heads, and the coin lands tails, then show a message that they lost - and vice versa for tails - heads
+    // 5. Button play again?
+
+
+    const $ = document.querySelector.bind(document);
+    const $$ = document.querySelectorAll.bind(document);
+
+    function DOMReady() {
+
+      // Button logic
+      const buttons = $$('.button');
+      buttons.forEach(button => {
+        button.addEventListener('click', e => {
+          const target = e.target;
+          const buttonText = target.innerText;
+
+
+          /**
+          *  Logic for changing the game state
+          */
+          // Grab the id for the next game state container
+          const nextStepId = (target.dataset && target.dataset.nextStep) || false;
+          if (nextStepId) {
+            // Hide all game state containers
+            $$('.game-state').forEach(el => {
+              el.classList.add('invisible');
+            });
+
+            // Show the next game state container
+            const nextStepEl = $(`#${nextStepId}`);
+            nextStepEl.classList.remove('invisible');
+          }
+
+
+          /**
+          * Logic for game play
+          */
+          const chosenCoinSide = (target.dataset && target.dataset.coinSide) || false;
+          if (chosenCoinSide) {
+            
+            // "Flip" the coin
+            const coinResults = flipCoin(chosenCoinSide);
+
+            // Display results to user
+            $('#chosen-coin-side').innerText = chosenCoinSide;
+            $('#coin-results').innerText = coinResults;
+
+            const displayMsg = (coinResults === chosenCoinSide) ? 'You are a winner! Good choice!' : 'Sorry, but it went the other way.'
+            $('#win-results').innerText = displayMsg;
+          }
+        });
+      });
+    }
+
+    // "Flips" the coin and returns the result
+    function flipCoin( chosenSide ) {
+      let coinResult = null;
+      
+      const randomNum = Math.random();
+      if (randomNum < 0.5) {
+        coinResult = "heads";
+      } else {
+        coinResult = "tails";
+      }
+
+      return coinResult;
+    }
+
+    document.addEventListener("DOMContentLoaded", DOMReady);
+  </script>
+
+  <style>
+
+    body {
+      text-align: center;
+    }
+
+    .invisible {
+      display: none;
+    }
+
+    .button-container {
+      display: flex;
+      justify-content: space-around;
+      padding: 64px;
+    }
+
+    .button {
+      border: 2px solid black;
+      padding: 36px;
+      border-radius: 8px;
+    }
+
+    #flipping-coin {
+     position: relative; 
+     transform-style: preserve-3d;
+     transform-origin: center right;
+    }
+
+    .flipped {
+      transform: translateX(-100%) rotateY(-180deg);
+    }
+
+    .flip-coin-scene {
+      -webkit-perspective: 800px;
+      perspective: 800px;
+    }
+
+    .coin-side {
+      backface-visibility: hidden;
+      width: 400px;
+      height: 400px;
+      border-radius: 400px;
+      position: absolute;
+
+    }
+    .heads-side {
+      background-color: gray;
+    }
+    .tails-side {
+      background-color: #f9f9f9;
+      transform: rotateY( 180deg );
+    }
+
+  </style>
+</head>
+<body>
+  <h1>Coin Flip</h1>
+
+<!-- 
+  <div class="flip-coin-scene">
+    <div id="flipping-coin" class="flipped">
+      <div class="coin-side heads-side">HEADS</div>
+      <div class="coin-side tails-side">TAILS</div>
+    </div>  
+  </div> -->
+  
+
+  <!-- Ask the user if they want to play a game. -->
+  <section id="game-start" class="game-state">
+    <h2>Would you like to play a game</h2>
+
+    <div class="button-container">
+      <div class="button affirmative" data-next-step="affirmative-case">
+        YES
+      </div>
+  
+      <div class="button negative" data-next-step="negative-case">
+        NO
+      </div>
+    </div>
+  </section>
+
+
+  <!-- Question Affirmative Case -->
+  <section id="affirmative-case" class="game-state invisible">
+    <div class="button-container">
+      <div
+        id="q-01-affirmative--coin-side-heads"
+        data-coin-side="heads" class="button">
+        HEADS
+      </div>
+  
+      <div id="q-01-affirmative--coin-side-tails" data-coin-side="tails" class="button">
+        TAILS
+      </div>
+    </div>
+
+    <div class="button-container">
+      <div class="action-button button" data-next-step="results-calculator">
+        FLIP COIN!
+      </div>
+    </div>
+  </section>
+
+  <!-- Question 1 Negative Case -->
+  <section id="negative-case" class="game-state invisible">
+    <h2>It's All Good </h2>
+    <p>Let us know if you change your mind</p>
+    <div class="button-container">
+      <div class="action-button button" data-next-step="game-start">
+        ACTUALLY I WANT TO PLAY
+      </div>
+    </div>
+  </section>
+
+  <!-- Results calculator -->
+  <section id="results-calculator" class="game-state invisible">
+    <h2>The coin is flipping, please wait</h2>
+    <div id="chosen-coin-side">
+
+    </div>
+    <div id="coin-results">
+      
+    </div>
+    <div id="win-results">
+      
+    </div>
+    <div class="button-container">
+      <div class="action-button button" data-next-step="game-start">
+        I WANT TO PLAY AGAIN
+      </div>
+    </div>
+  </section>
+</body>
+</html>
