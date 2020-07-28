@@ -25,3 +25,11 @@ https://us02web.zoom.us/rec/share/ypxZMu35_0lOZIHV4XDza788Jaq_T6a80CkW_vAEz0YwxG
 
 ## DEMO
 https://mhynson.github.io/coin-flip/
+
+## Things to consider
+I'm not going to worry about polishing this app within this repository, especially for the purpose of demoing some code and possibilities for students.
+
+There's plenty of polish needed though. Some critical improvements would be to:
+- add a selected state for the user's coin choice
+- show some sort of coin animation
+- more visual appeal
